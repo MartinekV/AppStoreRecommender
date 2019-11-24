@@ -10,7 +10,7 @@ class AppType(DjangoObjectType):
 
 
 class Query(graphene.ObjectType):
-    apps = graphene.App(AppType)
+    apps = graphene.List(AppType)
 
     def resolve_apps(self, info, **kwargs):
         return App.objects.all()
