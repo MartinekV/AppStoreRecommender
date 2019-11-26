@@ -2,5 +2,5 @@ from django.db import models
 
 # Create your models here.
 class App(models.Model):
-    url = models.URLField()
-    description = models.TextField(blank=True)
+    currency = models.TextField(blank=True)
+    prime_genre = models.TextField(blank=True)
