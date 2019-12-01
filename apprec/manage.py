@@ -3,9 +3,13 @@
 import os
 import sys
 
+import nltk
+import apprec
+
 
 def main():
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'apprec.settings')
+    nltk.data.path.append(os.path.dirname(apprec.__file__) + "\\..\\nltk_data")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
