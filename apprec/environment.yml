@@ -1,18 +1,32 @@
 name: recBE
 channels:
+  - anaconda
   - conda-forge
   - defaults
 dependencies:
   - aniso8601=7.0.0=py_0
+  - blas=1.0=mkl
   - certifi=2019.9.11=py36_0
   - graphene=2.1.8=py_0
   - graphql-core=2.2=py_0
   - graphql-relay=2.0.0=py_0
+  - icc_rt=2019.0.0=h0cc432a_1
+  - intel-openmp=2019.5=281
+  - joblib=0.14.0=py_0
+  - mkl=2019.5=281
+  - mkl-service=2.3.0=py36hb782905_0
+  - mkl_fft=1.0.15=py36h14836fe_0
+  - mkl_random=1.1.0=py36h675688f_0
+  - nltk=3.4.5=py36_0
+  - numpy=1.17.4=py36h4320e6b_0
+  - numpy-base=1.17.4=py36hc3f5095_0
   - pip=19.3.1=py36_0
   - promise=2.2.1=py36_1
   - python=3.6.9=h5500b2f_0
   - python-dateutil=2.8.1=py_0
   - rx=3.0.1=py_0
+  - scikit-learn=0.21.3=py36h6288b17_0
+  - scipy=1.3.1=py36h29ff71c_0
   - setuptools=41.6.0=py36_0
   - six=1.13.0=py36_0
   - sqlite=3.30.1=he774522_0
@@ -37,5 +51,5 @@ dependencies:
     - soupsieve==1.9.5
     - sqlparse==0.3.0
     - urllib3==1.25.7
-prefix: D:\Thesis\Anaconda3\envs\recBE
+prefix: C:\Users\Peter\Anaconda3\envs\recBE
 
