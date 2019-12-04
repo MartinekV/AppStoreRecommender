@@ -1,7 +1,9 @@
 import pickle
 import graphene
 from graphene_django import DjangoObjectType
-from django.db.models import Q
+from django.db.models import Q, Case, When
+
+from services.recommenderService import RecommenderService
 from .models import App
 
 
@@ -14,7 +16,9 @@ class AppType(DjangoObjectType):
     def resolve_recommendedApps(self, info):
         # ToDo call some recommenderSys algo to return recommended apps
         # object 'self' is current App
-        return [self, self, self, self]
+        recommended = RecommenderService.get_instance().get_recommended_apps(self.id, "", True, 20)
+        preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(recommended)])
+        return App.objects.filter(id__in=recommended).order_by(preserved)
 
 
 class Query(graphene.ObjectType):
