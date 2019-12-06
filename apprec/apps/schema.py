@@ -22,9 +22,9 @@ class AppType(DjangoObjectType):
 
 
 class Query(graphene.ObjectType):
-    apps = graphene.List(AppType, id=graphene.String())
+    apps = graphene.List(AppType, id=graphene.String(), searchDesc=graphene.String())
 
-    def resolve_apps(self, info, id=None, **kwargs):
+    def resolve_apps(self, info, id=None, searchDesc = None, **kwargs):
         # ToDo: extend this if it is necessary to filter using more/other attributes
 
         vectorizer = pickle.load(open("vectorizer.pickle", "rb"))  # load vectorizer
@@ -40,5 +40,12 @@ class Query(graphene.ObjectType):
                 Q(id=id)
             )
             return App.objects.using('default').filter(filterQuery)
+
+        if searchDesc:
+            filterQuery = (
+                Q(app_desc__contains=searchDesc)
+            )
+            return App.objects.using('default').filter(filterQuery)
+
         return App.objects.using('default')
 
