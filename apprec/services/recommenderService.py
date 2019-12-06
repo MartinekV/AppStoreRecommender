@@ -1,6 +1,7 @@
 import pickle
 
 from services.comparers.cosineSimilarity import CosineSimilarity
+from services.comparers.euclidianSimilarity import EuclidianSimilarity
 from services.methods.KNN import KNN
 
 
@@ -41,13 +42,11 @@ class RecommenderService(object):
 
         app_tfidf = self.tfidf_dict[app_id]
         app = App.objects.get(id=app_id)
-        apps = App.objects.filter(prime_genre=app.prime_genre)
+        apps = App.objects.filter(prime_genre=app.prime_genre).exclude(id=app_id)
         similarities = []
 
         for compared_app in apps:
-            if compared_app.id == app_id:
-                continue
-            print(compared_app.id)
-            similarities.append((compared_app.id, comparer.compare(app_tfidf, self.tfidf_dict[compared_app.id])))
+            tfidf = self.tfidf_dict[compared_app.id]
+            similarities.append((compared_app.id, comparer.compare(app_tfidf, tfidf)))
 
         return similarities

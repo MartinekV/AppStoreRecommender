@@ -11,7 +11,13 @@ class LemmaTokenizer(object):
         self.sbs = SnowballStemmer('english')
 
     def __call__(self, doc):
-        doc = re.sub('[0-9]+', '', doc)
+        doc = re.sub('[0-9*=･～+【】◆◇●•…■□・ー▼▲△▽►▻▶▷◁◈◉◎①○⋆＊★☆≈∞⇒※©~®™▬「」『』ㆍ（［］]+', '', doc)
+        doc = re.sub('(?:[a-zA-Z])_+\s', ' ', doc)
+        doc = re.sub('\s_+(?:[a-zA-Z])', ' ', doc)
+        doc = re.sub('(?:[a-zA-Z])-+\s', ' ', doc)
+        doc = re.sub('\s-+(?:[a-zA-Z])', ' ', doc)
+        doc = re.sub('\s_+\s', ' ', doc)
+        doc = re.sub('//(?:www)', ' ', doc)
         lemmas = [self.wnl.lemmatize(t) for t in word_tokenize(doc)]
         return [self.sbs.stem(l) for l in lemmas if len(l) > 2]
 
@@ -25,6 +31,7 @@ class TfIdfTransformer(object):
         vectorizer.fit(corpus)
         with open("vectorizer.pickle", "wb") as f:
             pickle.dump(vectorizer, f)
+        print(vectorizer.get_feature_names())
         print("processing done")
 
     @staticmethod
