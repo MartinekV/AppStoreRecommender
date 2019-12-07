@@ -3,11 +3,9 @@ import pickle
 
 import numpy as np
 from django.apps import AppConfig
-from numpy.random.mtrand import RandomState
-from sklearn.cluster import MiniBatchKMeans
-from sklearn.decomposition import PCA
-from sklearn.metrics import silhouette_score
+from sklearn.decomposition import PCA, TruncatedSVD
 
+from services.utils.KMeansHelper import KMeansHelper
 from services.utils.tfIdfTransformer import TfIdfTransformer
 
 
@@ -41,6 +39,7 @@ class AppsConfig(AppConfig):
                 import matplotlib
                 matplotlib.use('TkAgg')
                 import matplotlib.pyplot as plt
+
                 # Plotting the Cumulative Summation of the Explained Variance
                 plt.figure()
                 plt.plot(np.cumsum(pca.explained_variance_ratio_))
@@ -49,43 +48,47 @@ class AppsConfig(AppConfig):
                 plt.title('Explained Variance')
                 plt.show()
 
-        if not os.path.isfile("./kmeans.pickle"):
+        if not os.path.isfile("./pca-kmeans.pickle"):
             with open("pca.pickle", "rb") as f:
-                print("computing kmeans clusters...")
-                tfidfs = np.array(list(pickle.load(f).values()))
-                inertia = []
-                sil = []
-                genres = list(App.objects.values_list("prime_genre", flat=True).distinct())
-                genre_count = len(genres)
-                print("genre count =", genre_count)
-                for k in range(2, 100):
-                    print("k =", k)
-                    km = MiniBatchKMeans(n_clusters=k, random_state=RandomState())
-                    pred = km.fit_predict(tfidfs)
+                print("computing pca kmeans clusters...")
+                table = pickle.load(f)
+                pca = np.array(list(table.values()))
 
-                    inertia.append((k, km.inertia_))
-                    sil.append((k, silhouette_score(tfidfs, pred)))
-                    print("inertia = ", km.inertia_, ", score = ", silhouette_score(tfidfs, pred))
+                # KMeansHelper.compute_cluster_intertia_and_silhouette(pca, 2, 100)
+                KMeansHelper.compute_clusters(table.keys(), pca, 93, "pca-kmeans.pickle")
+
+        if not os.path.isfile("./lsa.pickle"):
+            with open("tfidf_table.pickle", "rb") as f:
+                print("computing lsa...")
+                table = pickle.load(f)
+                tfidfs = np.array(list(table.values()))
+                lsa = TruncatedSVD(n_components=50)
+                transformed = lsa.fit_transform(tfidfs)
+
+                data = {}
+                for id, tfidf in zip(table.keys(), transformed):
+                    data[id] = tfidf
+
+                with open("lsa.pickle", "wb") as ft:
+                    pickle.dump(data, ft)
 
                 import matplotlib
                 matplotlib.use('TkAgg')
                 import matplotlib.pyplot as plt
-                fig, ax = plt.subplots(1, 2, figsize=(15, 8))
 
-                print("plotting inertia")
-                x_iner = [x[0] for x in inertia]
-                y_iner = [x[1] for x in inertia]
-                ax[0].plot(x_iner, y_iner)
-                ax[0].set_xlabel('Number of Clusters')
-                ax[0].set_ylabel('Intertia')
-                ax[0].set_title('Elbow Curve')
-
-                print("plotting silhoute")
-                x_sil = [x[0] for x in sil]
-                y_sil = [x[1] for x in sil]
-                ax[1].plot(x_sil, y_sil)
-                ax[1].set_xlabel('Number of Clusters')
-                ax[1].set_ylabel('Silhouetter Score')
-                ax[1].set_title('Silhouetter Score Curve')
-
+                # Plotting the Cumulative Summation of the Explained Variance
+                plt.figure()
+                plt.plot(np.cumsum(lsa.explained_variance_ratio_))
+                plt.xlabel('Number of Components')
+                plt.ylabel('Variance (%)')  # for each component
+                plt.title('LSA - Explained Variance')
                 plt.show()
+
+        if not os.path.isfile("./lsa-kmeans.pickle"):
+            with open("lsa.pickle", "rb") as f:
+                print("computing lsa kmeans clusters...")
+                table = pickle.load(f)
+                lsa = np.array(list(table.values()))
+
+                # KMeansHelper.compute_cluster_intertia_and_silhouette(lsa, 2, 100)
+                KMeansHelper.compute_clusters(table.keys(), lsa, 45, "lsa-kmeans.pickle")
