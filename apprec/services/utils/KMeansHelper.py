@@ -1,4 +1,6 @@
 import pickle
+import matplotlib
+import matplotlib.pyplot as plt
 
 from matplotlib import cm
 from numpy.random.mtrand import RandomState
@@ -22,9 +24,8 @@ class KMeansHelper(object):
             sil.append((k, silhouette_score(features, pred)))
             print("inertia = ", km.inertia_, ", score = ", silhouette_score(features, pred))
 
-        import matplotlib
         matplotlib.use('TkAgg')
-        import matplotlib.pyplot as plt
+
         fig, ax = plt.subplots(1, 2, figsize=(15, 8))
 
         print("plotting inertia")
@@ -62,9 +63,8 @@ class KMeansHelper(object):
 
         colors = [cm.hsv(i / max(pred)) for i in pred]
 
-        import matplotlib
         matplotlib.use('TkAgg')
-        import matplotlib.pyplot as plt
+
         fig, ax = plt.subplots(1, 2, figsize=(15, 8))
 
         ax[0].scatter(pca[:, 0], pca[:, 1], c=colors)

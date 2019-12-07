@@ -27,7 +27,7 @@ class TfIdfTransformer(object):
     def fit(corpus):
         print("processing {} documents...".format(len(corpus)))
 
-        vectorizer = TfidfVectorizer(tokenizer=LemmaTokenizer(), stop_words=stopwords.words("english"))
+        vectorizer = TfidfVectorizer(tokenizer=LemmaTokenizer(), stop_words=stopwords.words("english"), min_df=2)
         vectorizer.fit(corpus)
         with open("vectorizer.pickle", "wb") as f:
             pickle.dump(vectorizer, f)
