@@ -30,6 +30,15 @@ class AppsConfig(AppConfig):
                 pca = PCA(n_components=3000)
                 ModelHelper.fit_model_and_transform(pca, pickle.load(f), "pca.pickle")
 
+        if not os.path.isfile("./tfidf-kmeans.pickle"):
+            with open("tfidf_table.pickle", "rb") as f:
+                print("computing tfidf kmeans clusters...")
+                table = pickle.load(f)
+                tfidf = np.array(list(table.values()))
+
+                #KMeansHelper.compute_cluster_intertia_and_silhouette(tfidf, 2, 100)
+                KMeansHelper.compute_clusters(table.keys(), tfidf, 32, "tfidf-kmeans.pickle")
+
         if not os.path.isfile("./pca-kmeans.pickle"):
             with open("pca.pickle", "rb") as f:
                 print("computing pca kmeans clusters...")
