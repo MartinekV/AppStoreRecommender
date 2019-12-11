@@ -65,7 +65,7 @@ class RecommenderService(object):
 
         app_tfidf = features[app_id]
         app = App.objects.get(id=app_id)
-        apps = App.objects.filter(prime_genre=app.prime_genre).exclude(id=app_id)
+        apps = App.objects.filter(prime_genre=app.prime_genre).exclude(id=app_id).filter(rating_count_tot__gte=100)
         similarities = []
 
         for compared_app in apps:
@@ -79,7 +79,8 @@ class RecommenderService(object):
 
         app_tfidf = features[app_id]
         app_cluster = labels[app_id]
-        apps = App.objects.exclude(id=app_id)
+        app = App.objects.get(id=app_id)
+        apps = App.objects.exclude(id=app_id).filter(rating_count_tot__gte=100)
         similarities = []
 
         for compared_app in apps:

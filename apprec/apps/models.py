@@ -8,7 +8,7 @@ class App(models.Model):
     size_bytes = models.TextField(blank=True)
     currency = models.TextField(blank=True)
     price = models.TextField(blank=True)
-    rating_count_tot = models.TextField(blank=True)
+    rating_count_tot = models.IntegerField(blank=True)
     rating_count_ver = models.TextField(blank=True)
     user_rating = models.TextField(blank=True)
     user_rating_ver = models.TextField(blank=True)
